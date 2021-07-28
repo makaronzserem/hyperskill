@@ -1,0 +1,114 @@
+t = [["_", "_", "_"], ["_", "_", "_"], ["_", "_", "_"]]
+player = "X"  #X starts the game
+game_over = False
+
+def print_board():
+    print("---------")
+    print("|", t[0][0], t[0][1], t[0][2], "|")
+    print("|", t[1][0], t[1][1], t[1][2], "|")
+    print("|", t[2][0], t[2][1], t[2][2], "|")
+    print("---------")
+
+def user_input(player):
+    correct_input = False
+    while not correct_input:
+        x, y = input("Enter the coordinates: ").split()
+        if x.isnumeric() and y.isnumeric():  #checking if the input are numbers
+            if x == "1" or x == "2" or x == "3":
+                if y == "1" or y == "2" or y == "3":  #first move
+                    x = int(x)
+                    y = int(y)
+                    if t[x - 1][y - 1] == "X" or t[x - 1][y - 1] == "O":
+                        print("This cell is occupied! Choose another one!")
+                        correct_input = False
+                    elif t[x - 1][y - 1] == "_":
+                        correct_input = True
+                        t[x - 1][y - 1] = player
+                        print_board()
+                else:
+                    print("Coordinates should be from 1 to 3!")
+            else:
+                print("Coordinates should be from 1 to 3!")
+        else:
+            print("You should enter numbers!")
+    return player
+
+def empty_cells():
+    i = 0
+    j = 0
+    while i <= 2:
+        while j <= 2:
+            if t[i][j] == "_":
+                return True
+            else:
+                j += 1
+        i += 1
+        j = 0
+    return False
+
+def three_in_row():
+    winner_table = []
+    #vertical
+    if t[0][0] == t[1][0] == t[2][0] == player:
+        winner_table.append(t[0][0])
+    if t[0][1] == t[1][1] == t[2][1] == player:
+        winner_table.append(t[0][1])
+    if t[0][2] == t[1][2] == t[2][2] == player:
+        winner_table.append(t[0][2])
+
+    #horizontal
+    if t[0][0] == t[0][1] == t[0][2] == player:
+        winner_table.append(t[0][0])
+    if t[1][0] == t[1][1] == t[1][2] == player:
+        winner_table.append(t[0][1])
+    if t[2][0] == t[2][1] == t[2][2] == player:
+        winner_table.append(t[2][0])
+
+    #diagonally
+    if t[0][0] == t[1][1] == t[2][2] == player or t[0][2] == t[1][1] == t[2][0] == player:
+        winner_table.append(t[1][1])
+
+    #who is the winner
+    if len(winner_table) == 1:
+        if winner_table[0] == "X":
+            return 1
+        elif winner_table[0] == "O":
+            return 2
+    elif len(winner_table) == 0:
+        return 0
+
+def game_status():
+    who_wins = three_in_row()
+    empty_g = empty_cells()
+    end_of_game = False
+    if empty_g:
+            if who_wins == 1:
+                end_of_game = True
+                print("X wins")
+            elif who_wins == 2:
+                end_of_game = True
+                print("O wins")
+    elif not empty_g:
+            if who_wins == 0:
+                end_of_game = True
+                print("Draw")
+            elif who_wins == 1:
+                end_of_game = True
+                print("X wins")
+            elif who_wins == 2:
+                end_of_game = True
+                print("O wins")
+    return end_of_game
+
+
+print_board()  #printing starting board
+
+while game_over == False:
+    user_input(player)
+    game_over = game_status()
+    if player == "X":
+        player = "O"
+    else:
+        player = "X"
+
+
