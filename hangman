@@ -1,0 +1,80 @@
+import random
+
+print("H A N G M A N")
+
+do_we_play = True
+
+while do_we_play == True:
+    
+    correct_input = False
+    while not correct_input:
+        menu = input("Type \"play\" to play the game, \"exit\" to quit: ")
+        if menu == "play":
+            do_we_play = True
+            correct_input = True
+        elif menu == "exit":
+            do_we_play = False
+            correct_input = True
+    
+    if do_we_play == False:
+        break
+    
+    lives = 8
+    words = ['python', 'java', 'kotlin', 'javascript']
+    word = random.sample(words, k=1)
+    letters = []
+
+    new_word = []
+    for m in range(0, len(word[0])):
+        new_word.append(word[0][m])
+
+    hidden_word = ["-"] * len(new_word)
+
+
+    while hidden_word != new_word:
+        
+        if lives == 0:
+            print("You lost!!")
+            break
+            
+        print("")
+        print("".join(hidden_word))
+        guess = input("Input a letter:")
+
+        if len(guess) != 1:
+            print("You should input a single letter")
+            continue
+        if not guess.islower():
+            print("Please enter a lowercase English letter")
+            continue
+        if not guess.isalpha():
+            print("You should input a single letter")
+            continue
+        
+        
+        if guess in letters:
+            print("You've already guessed this letter")
+            continue
+        else: 
+            letters.append(guess)
+
+        if guess in new_word:
+
+            numb = new_word.count(guess)
+            if numb == 1:
+                i = new_word.index(guess)
+                hidden_word[i] = guess
+            else:
+                for j in range(0, len(new_word)):
+                    if new_word[j] == guess:
+                        hidden_word[j] = guess
+        else:
+                lives -= 1
+                print("That letter doesn't appear in the word")
+
+    if hidden_word == new_word:
+        print("You guessed the word!")
+        print("You survived!")
+        
+        
+    
