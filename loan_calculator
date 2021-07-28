@@ -1,0 +1,89 @@
+import math
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--types', nargs=1, type=str)
+parser.add_argument('--payment', nargs=1, type=float)
+parser.add_argument('--principal', nargs=1, type=int)
+parser.add_argument('--periods', nargs=1, type=int)
+parser.add_argument('--interest', nargs=1, type=float)
+
+    
+
+args = parser.parse_args()  #user input
+values = vars(args)  #dictionary with arguments
+
+counter = 0
+for key in values:
+    if values[key] != None:
+        counter += 1
+    else:
+        pass  #delete 'None' arguments from the dictionary
+
+if counter != 4 or values['types'] == None or values['interest'] == None:
+    print("Incorrect parameters")
+    exit()
+
+    
+
+if values['payment'] == None:
+    if values['types'][0] == 'annuity':  #counting ann
+        p = values['principal'][0]
+        periods = values['periods'][0]
+        i = values['interest'][0] / 12 / 100
+        a = p * ((i * math.pow(1 + i, periods)) / (math.pow(1 + i, periods) - 1))
+        a = round(a + 0.5, 0)
+        print("Your monthly payment =", a ,"!")
+        
+    elif values['types'][0] == 'diff':  #counting diff
+        p = values['principal'][0]
+        periods = values['periods'][0]
+        i = values['interest'][0] / 12 / 100
+        m = 1
+        total = 0
+        while m <= periods:
+            d = p / periods + i * (p - (p * (m - 1))/ periods)
+            d = round(d + 0.5, 0)
+            d = int(d)
+            print("Month", m, ": payment is", d)
+            m += 1
+            total += d
+        overpayment = total - p
+        print("Overpayment =", overpayment)
+    
+    
+if values['principal'] == None:  #counting principal
+    a = values['payment'][0]
+    periods = values['periods'][0]
+    i = values['interest'][0] / 12 / 100
+    principal = a / ((i * math.pow((1 + i), periods)) / (math.pow((i + 1), periods) - 1))
+    overpayment = a * periods - principal
+    print("Your loan principal = ", principal,"!")
+    print("Overpayment =", overpayment)
+
+if values['periods'] == None:  #counting periods
+    p = values['principal'][0]
+    a = values['payment'][0]
+    i = values['interest'][0] / 12 / 100
+    periods = math.log((a / (a - i * p)), (1 + i))  #periods
+    periods = round(periods + 0.5, 0)
+    years = int(periods // 12)
+    months = int(periods % 12)
+    overpayment = a * periods - p
+    if years == 0:
+        if months == 1:
+            print("It will take 1 month to repay this loan!")
+            print("Overpayment =", overpayment)
+        else: 
+            print("It will take", months, "months to repay this loan!")
+            print("Overpayment =", overpayment)
+    if years > 0:
+        if months == 0:
+            print("It will take", years, "years to repay this loan!")
+            print("Overpayment =", overpayment)
+        else:
+            print("It will take", years, "years and", months, "months to repay this loan!")
+            print("Overpayment =", overpayment)
+
+
