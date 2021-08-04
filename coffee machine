@@ -1,0 +1,200 @@
+def print_actual_status():
+    print("The coffee machine has:")
+    print(water, "of water")
+    print(milk, "of milk")
+    print(beans, "of coffee beans")
+    print(cups, "of disposable cups")
+    print("$", money, sep="", end=" ")
+    print("of money")
+    
+def choose_action():
+    print("Write action (buy, fill, take, remaining, exit):")
+    action = input()
+    return action
+    
+def choose_coffee():
+    choice = input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:")
+    return choice
+
+def change_milk(x):
+    global milk
+    return milk - x
+def change_water(x):
+    global water
+    return water - x
+def change_beans(x):
+    global beans
+    return beans - x
+def change_cups(x):
+    global cups
+    return cups - x
+def change_money(x):
+    global money
+    return money + x
+
+def take():
+    global money
+    print("I gave you", end=" ")
+    print("$", money, sep="")
+    money = 0
+    return money
+    
+def fill():
+    global water
+    global milk
+    global money
+    global beans
+    global cups
+    
+    print("Write how many ml of water you want to add:")
+    added_water = int(input())
+    print("Write how many ml of milk you want to add:")
+    added_milk = int(input())
+    print("Write how many grams of coffee beans you want to add:")
+    added_beans = int(input())
+    print("Write how many grams of coffee beans you want to add:")
+    added_cups = int(input())
+    
+    water += added_water
+    milk += added_milk
+    beans += added_beans
+    cups += added_cups
+    
+    return water, milk, beans, cups
+
+def buy():
+    global water
+    global milk
+    global money
+    global beans
+    global cups
+    coffee_type = choose_coffee()
+    
+    if coffee_type == "back":
+        return
+    
+    water_ok = check_water(coffee_type)
+    milk_ok = check_milk(coffee_type)
+    beans_ok = check_beans(coffee_type)
+    cups_ok = check_cups()
+    
+    if water_ok and milk_ok and beans_ok and cups_ok:
+        print("I have enough resources, making you a coffee!")
+        if coffee_type == "1":
+            water = change_water(250)
+            beans = change_beans(16)
+            money = change_money(4)
+            cups = change_cups(1)
+        if coffee_type == "2":
+            water = change_water(350)
+            milk = change_milk(75)
+            beans = change_beans(20)
+            money = change_money(7)
+            cups = change_cups(1)
+        if coffee_type == "3":
+            water = change_water(200)
+            milk = change_milk(100)
+            beans = change_beans(12)
+            money = change_money(6)
+            cups = change_cups(1)
+        return water, milk, beans, money, cups
+    else:
+        if not water_ok:
+            print("Sorry, not enough water")
+        if not milk_ok:
+            print("Sorry, not enough milk")
+        if not beans_ok:
+            print("Sorry, not enough coffee")
+        if not cups_ok:
+            print("Sorry, not enough cups")
+
+        
+def check_water(ctype):
+    global water
+    if ctype == "1":
+        if water < 250:
+            return False
+        else:
+            return True
+    if ctype == "2":
+        if water < 350:
+            return False
+        else:
+            return True
+    if ctype == "3":
+        if water < 200:
+            return False
+        else:
+            return True
+            
+def check_beans(ctype):
+    global beans
+    if ctype == "1":
+        if beans < 16:
+            return False
+        else:
+            return True
+    if ctype == "2":
+        if beans < 20:
+            return False
+        else:
+            return True
+    if ctype == "3":
+        if beans < 12:
+            return False
+        else:
+            return True
+            
+def check_milk(ctype):
+    global milk
+    if ctype == "1":
+        return True
+    if ctype == "2":
+        if milk < 75:
+            return False
+        else:
+            return True
+    if ctype == "3":
+        if milk < 100:
+            return False
+        else:
+            return True
+            
+def check_cups():
+    global cups
+    if cups < 1:
+        return False
+    else:
+        return True
+
+water = 400
+milk = 540
+beans = 120
+cups = 9
+money = 550
+
+def menu():
+    user_choice = choose_action()
+    print("")
+    
+    if user_choice == "buy":
+        buy()
+        print("")
+        
+    elif user_choice == "take":
+        take()
+        print("")
+
+    elif user_choice == "fill":
+        fill()
+        print("")
+        
+    elif user_choice == "remaining":
+        print_actual_status()
+        print("")
+        
+    elif user_choice == "exit":
+        exit()
+   
+while 1 > 0: 
+    menu()
