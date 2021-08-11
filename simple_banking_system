@@ -13,8 +13,37 @@ class Bank:
     def create_account(self):        
         while True:
             prefix = "400000"
-            inefix = str(random.randint(1000000000, 9999999999))
-            account_num = int(prefix + inefix)
+            inefix = str(random.randint(100000000, 999999999))
+            account_num = prefix + inefix  #15 digits
+            
+            #algorithm Luhna
+            copy_account = []
+            for j in range(0, 15):
+                copy_account.append(account_num[j])
+            copy_account = [int(n) for n in copy_account]
+            for i in range(0, 15):
+                if i % 2 == 0:
+                    copy_account[i] =  copy_account[i] * 2
+            #print(copy_account)
+            for i in range(0, 15):
+                if copy_account[i] > 9:
+                    copy_account[i] =  copy_account[i] - 9
+            #print(copy_account)
+            sum_num = 0
+            for i in range(0, 15):
+                sum_num += copy_account[i]
+ 
+            if sum_num % 10 == 0:
+                checksum = 0
+            else:
+                y = sum_num // 10
+                checksum = (y + 1) * 10 - sum_num
+            account_num = int(prefix + inefix + str(checksum))
+            
+            #print(checksum)
+            #print(sum_num)
+            
+            #  
             
             if not account_num in self.accounts:
                 new_pin = random.randint(1000, 9999)
