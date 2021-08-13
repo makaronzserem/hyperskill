@@ -34,6 +34,25 @@ class Database():
         self.cur.close()
         self.conn.close()
 
+    def close_account(self, account_v):
+        self.cur.execute("DELETE FROM card WHERE number=?", (account_v, ))
+        self.conn.commit()  #commit changes to database
+
+    def add_income(self, account_v, income):
+        self.cur.execute("UPDATE card SET balance=? WHERE number=?", (self.check_balance(account_v)+income, account_v,))
+        self.conn.commit()  #commit changes to database
+
+    def do_transfer(self, account_v1, account_v2, money):
+        helper = self.check_balance(account_v1)
+        if helper >= money:
+            self.cur.execute("UPDATE card SET balance=? WHERE number=?", (helper-money, account_v1,))
+            self.cur.execute("UPDATE card SET balance=? WHERE number=?", (self.check_balance(account_v2)+money, account_v2,))
+            self.conn.commit()  #commit changes to database
+            return True
+        else:
+            return False
+
+
         #column_info = self.cur.description
         #print(self.cur.fetchall())
         #result = [{column_info[index][0]:value for index, value in enumerate(rows)} for rows in self.cur.fetchall()]
