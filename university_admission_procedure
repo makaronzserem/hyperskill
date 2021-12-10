@@ -1,7 +1,7 @@
 n = int(input())  #places to take per each course
 
-#list of courses, free spots, main subject
-studies = [["Chemistry", n, 1], ["Biotech", n, 1], ["Engineering", n, 3], ["Mathematics", n, 2], ["Physics", n, 0]]
+#list of courses, free spots, main subject, listofstudents
+studies = [["Biotech", n, 1, []], ["Chemistry", n, 1, []], ["Engineering", n, 3, []], ["Mathematics", n, 2, []], ["Physics", n, 0, []]]
 
 all_applicants = []
 accepted_applicants = []
@@ -29,21 +29,27 @@ for line in file:
     line[8] = line[8].replace('\n','')
     all_applicants.append(Applicant(line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8]))
 
+for i in range(0, 3):
+    for course in studies:
+        sort_applicants(all_applicants, course)
+        for applicant in all_applicants:
+            if applicant.choice[i] == course[0]:
+                # print(applicant.name, applicant.surname, applicant.score[1], applicant.choice[0])
+                if course[1] > 0:
+                    accepted_applicants.append(applicant)
+                    course[3].append(applicant)
+                    course[1] -= 1
+        for applicant in accepted_applicants:
+            if applicant in all_applicants:
+                all_applicants.remove(applicant)
 
 for course in studies:
-    sort_applicants(all_applicants, course)
-    for applicant in all_applicants:
-        if applicant.choice[0] == course[0]:
-            # print(applicant.name, applicant.surname, applicant.score[1], applicant.choice[0])
-            if course[1] > 0:
-                accepted_applicants.append(applicant)
-                course[1] -= 1
-    for applicant in accepted_applicants:
-        if applicant in all_applicants:
-            all_applicants.remove(applicant)
+    course[3].sort(key=lambda x: x.name)
+    course[3].sort(key=lambda x: x.score[course[2]], reverse=True)
 
-
-for applicant in accepted_applicants:
-    print(applicant.name, applicant.surname, applicant.score[1], applicant.choice[0])
+    print(course[0])
+    for student in course[3]:
+        print(student.name, student.surname, student.score[course[2]])
+    print("")
 
 file.close()
