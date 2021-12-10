@@ -1,0 +1,93 @@
+n = int(input())
+
+#list of courses and number of applicants per each choice, n - places to take
+studies = [["Biotech", n], ["Chemistry", n], ["Engineering", n], ["Mathematics", n], ["Physics", n]]
+
+all_app = []
+app_after_first = []
+last_chance = []
+accepted = []
+
+class Applicant:
+    def __init__(self, name, surname, score, first_choice, second_choice, third_choice):
+        self.name = name
+        self.surname = surname
+        self.score = score
+        self.first_choice = first_choice
+        self.second_choice = second_choice
+        self.third_choice = third_choice
+    
+
+file = open('applicants.txt', 'r')
+
+#creating all applicants list
+for line in file:
+    line = [value for value in line.split(" ")]
+    line[2] = float(line[2])
+    line[5] = line[5].replace('\n','')
+    all_app.append(Applicant(line[0], line[1], line[2], line[3], line[4], line[5]))
+
+#sorting all by score
+all_app.sort(key=lambda x: x.name)
+all_app.sort(key=lambda x: x.score, reverse=True)
+
+#applicants accepted by first choice
+for course in studies:
+    for app in all_app:
+        if course[0] == app.first_choice:
+            if course[1] > 0:
+                #print(course[1])
+                accepted.append(app)
+                #print(app.name, app.surname, app.score, app.first_choice)
+                course[1] -= 1
+
+
+#list with people who were not accepted by first choice
+for i in all_app:
+    if i not in accepted:
+        app_after_first.append(i)
+        #print(i.name, i.surname, i.score, i.first_choice)
+
+#applicants accepted by second choice
+for course in studies:
+    if course[1] > 0:
+        for app in app_after_first:
+            if course[0] == app.second_choice:
+                if course[1] > 0:
+                    #print(course[1])
+                    app.first_choice = app.second_choice
+                    accepted.append(app)
+                    #print(app.name, app.surname, app.score, app.second_choice, "tutaj druga trua")
+                    course[1] -= 1
+
+    
+#list with people who were not accepted by second choice
+for i in app_after_first:
+    if i not in accepted:
+        last_chance.append(i)
+
+
+#applicants accepted by third choice
+for course in studies:
+    if course[1] > 0:
+        for app in last_chance:
+            if course[0] == app.third_choice:
+                if course[1] > 0:
+                    #print(course[1])
+                    app.first_choice = app.third_choice
+                    accepted.append(app)
+                    #print(app.name, app.surname, app.score, app.second_choice, "tutaj trzecia trua")
+                    course[1] -= 1
+
+
+accepted.sort(key=lambda x: x.name)
+accepted.sort(key=lambda x: x.score, reverse=True)
+
+for course in studies:
+    print(course[0])
+    for person in accepted:
+        if person.first_choice == course[0]:
+            print(person.name, person.surname, person.score)
+    print("")
+
+file.close()
